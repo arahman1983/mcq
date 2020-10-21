@@ -3,7 +3,7 @@ const answersReducer = (state = [], action) => {
     case "ADD_ANSWERS":
       return [...state, action.answer];
     case "RESET_ANSWERS":
-      return [...state, action.answer];
+      return [];
     default:
       return state;
   }
