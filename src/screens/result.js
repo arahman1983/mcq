@@ -1,24 +1,20 @@
-import React, { Component } from "react";
+import React from "react";
 import Lottie from "react-lottie";
 import success from "../animation/success.json";
 import lose from "../animation/lose.json";
 import {SubmitBtn} from '../components'
+import {addUser} from '../redux/actions/userActions';
+import {changeAppState} from '../redux/actions/appStateAction';
+import { connect } from "react-redux";
 
-class Result extends Component {
-  constructor() {
-    super();
-    this.state = {
-      result: 8, //// will come from store
-    };
+function  Result (props) {
+  let result = 9
+
+  const tryAgain = (e)=>{
+    props.dispatch(changeAppState("welcome"));
+    props.dispatch(addUser(''));
   }
 
-  tryAgain(e){
-    console.log("type will be welcome again") //// dispatch to change appState to welcome 
-  }
-
-
-  render() {
-    const result = this.state.result;
     const defaultOptions = {
       loop: true,
       autoplay: true,
@@ -34,11 +30,10 @@ class Result extends Component {
         <Lottie options={defaultOptions} height={200} width={200} />
         <p className="text-center">your score {result}/10</p>
         <div className="w-50 mx-auto my-3">
-          <SubmitBtn btnLabel="New MCQ" btnHandler={this.tryAgain} />
+          <SubmitBtn btnLabel="New MCQ" btnHandler={tryAgain} />
         </div>
       </>
     );
   }
-}
 
-export default Result;
+export default connect()(Result);
