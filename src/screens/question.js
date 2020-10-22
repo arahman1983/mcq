@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ChoiceRadio, SubmitBtn } from "../components";
 import { connect } from "react-redux";
 import {addAnswer} from '../redux/actions/answersActions'
@@ -8,10 +8,6 @@ function Question (props) {
   const [selectedAnswer, setSelectedAnswer] = useState("")
   const [RandomIndex, setRandomIndex] = useState(0)
   const [error, setError] = useState(false)
-
-  // useEffect(() => {
-  //   setRandomIndex(Math.floor(Math.random()*5))
-  // }, [])
 
   const selectAnswer = (e) => {
     setSelectedAnswer(e.target.value)
@@ -32,24 +28,11 @@ function Question (props) {
         props.dispatch(changeAppState('result'))
       }else{
         setRandomIndex(RandomIndex + 1)
-        /// check if there are other questions in the store get new one
-        // let rIndex =  Math.floor(Math.random()*( props.question.length - 1))
-        // if(props.answers){
-        //   if(props.question[rIndex].qId === props.answers[rIndex].qId){
-        //     rIndex =  Math.floor(Math.random()*5)
-        //   }else{
-        //     setRandomIndex(rIndex)
-        //   }
-        //}
       }
     }else{
       setError(true);
     }
   }
-
-
-
-    /// will come from store
     
     return (
       <>
@@ -73,6 +56,11 @@ function Question (props) {
       </>
     );
   }
+
+
+  
+
+
 const mapStateToProps = (state)=> {
   return state
 }

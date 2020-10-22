@@ -3,6 +3,7 @@ import { UserInput, SubmitBtn } from "../components";
 import {addUser} from '../redux/actions/userActions';
 import {changeAppState} from '../redux/actions/appStateAction';
 import { connect } from "react-redux";
+import {randomQ} from '../redux/actions/questionsActions'
 
 
 function Welcome (props) {
@@ -14,6 +15,7 @@ function Welcome (props) {
     if (userName) {
       props.dispatch(addUser(userName));
       props.dispatch(changeAppState('question'))
+      props.dispatch(randomQ())
     } else {
       setError(true)
     }

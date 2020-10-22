@@ -1,3 +1,21 @@
+
+  function randomQuestions(array) {
+    var i = array.length,
+        j = 0,
+        temp;
+    while (i--) {
+
+        j = Math.floor(Math.random() * (i+1));
+
+        // swap randomly chosen element with current element
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
+
 const questionsReducer = (state = [
   {
     qId: 1,
@@ -117,7 +135,7 @@ const questionsReducer = (state = [
 ], action) => {
   switch (action.type) {
     case "GET_RANDOM":
-      return state;
+      return randomQuestions(state);
     default:
       return state;
   }
