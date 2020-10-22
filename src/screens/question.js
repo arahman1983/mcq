@@ -1,70 +1,79 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { ChoiceRadio, SubmitBtn } from "../components";
+import { connect } from "react-redux";
+import {addAnswer} from '../redux/actions/answersActions'
+import {changeAppState} from '../redux/actions/appStateAction'
 
-class Question extends Component {
-  constructor() {
-    super();
-    this.state = {
-      selectsAnswer: "",
-    };
-    this.selectAnswer = this.selectAnswer.bind(this);
+function Question (props) {
+  const [selectedAnswer, setSelectedAnswer] = useState("")
+  const [RandomIndex, setRandomIndex] = useState(0)
+  const [error, setError] = useState(false)
+
+  // useEffect(() => {
+  //   setRandomIndex(Math.floor(Math.random()*5))
+  // }, [])
+
+  const selectAnswer = (e) => {
+    setSelectedAnswer(e.target.value)
+    setError(false);
   }
 
-  selectAnswer(e) {
-    console.log(e.target.value)
-    this.setState({
-      selectsAnswer : e.target.value
-    })
+  const answerQuestion = (e)=>{
+    e.preventDefault();
+    if(selectedAnswer){
+      props.dispatch(addAnswer({
+        qId: props.question[RandomIndex].qId,
+        answer: props.question[RandomIndex].answer,
+        choice: selectedAnswer
+      }))
+      setSelectedAnswer("")
+      /// dispatch adding answer id and wId to answers array
+      if(props.answers.length === props.question.length-1){
+        props.dispatch(changeAppState('result'))
+      }else{
+        setRandomIndex(RandomIndex + 1)
+        /// check if there are other questions in the store get new one
+        // let rIndex =  Math.floor(Math.random()*( props.question.length - 1))
+        // if(props.answers){
+        //   if(props.question[rIndex].qId === props.answers[rIndex].qId){
+        //     rIndex =  Math.floor(Math.random()*5)
+        //   }else{
+        //     setRandomIndex(rIndex)
+        //   }
+        //}
+      }
+    }else{
+      setError(true);
+    }
   }
 
-  answerQuestion(e){
-    e.preventDefault()
-    /// dispatch adding answer id and wId to answers array
-    /// check if there are other questions in the store get new one
-    /// else change type to result
-  }
 
-  render() {
+
     /// will come from store
-    const questionObj = {
-      qId: 1,
-      question: "What is Egypt's Capital ?",
-      choices: [
-        {
-          id: 1,
-          title: "Alex",
-        },
-        {
-          id: 2,
-          title: "Cairo",
-        },
-        {
-          id: 3,
-          title: "Aswan",
-        },
-        {
-          id: 4,
-          title: "Mansoura",
-        },
-      ],
-      answer: 2,
-    };
+    
     return (
       <>
-        <h4>{questionObj.question}</h4>
+        <h4>{props.question[RandomIndex].question}</h4>
         <div className="row">
-          {questionObj.choices.map((choice, index) => (
+          {props.question[RandomIndex].choices.map((choice, index) => (
             <div className="col-6 my-3" key={index}>
-              <ChoiceRadio name="choices" selectsAnswer ={this.state.selectsAnswer} choiceLabel={choice.title} choiceId={choice.id} changeValue={this.selectAnswer} />
+              <ChoiceRadio name={`choices${choice.qId}`} selectsAnswer ={selectedAnswer} choiceLabel={choice.title} choiceId={choice.id} changeValue={selectAnswer} />
             </div>
           ))}
           <div className="w-50 mx-auto my-3">
-            <SubmitBtn btnLabel="New MCQ" btnHandler={this.answerQuestion} />
+            <SubmitBtn btnLabel="submit answer" btnHandler={answerQuestion} />
           </div>
+          {
+            error &&
+            <div className="w-100 mx-auto">
+              <p className="text-center text-danger" >You Must choose answer</p>
+            </div>
+          }
         </div>
       </>
     );
   }
+const mapStateToProps = (state)=> {
+  return state
 }
-
-export default Question;
+export default connect(mapStateToProps)(Question);

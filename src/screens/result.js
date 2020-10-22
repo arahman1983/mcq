@@ -1,18 +1,26 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Lottie from "react-lottie";
 import success from "../animation/success.json";
 import lose from "../animation/lose.json";
 import {SubmitBtn} from '../components'
 import {addUser} from '../redux/actions/userActions';
 import {changeAppState} from '../redux/actions/appStateAction';
+import {resetAnswer} from '../redux/actions/answersActions';
 import { connect } from "react-redux";
 
 function  Result (props) {
-  let result = 9
+  const [result, setResult] = useState(0)
+  useEffect(() => {
+    setResult(
+      props.answers.filter(answer => Number(answer.answer) === Number(answer.choice)).length * 2
+    )
+  }, [ props.answers])
+  // let result = 9
 
   const tryAgain = (e)=>{
     props.dispatch(changeAppState("welcome"));
     props.dispatch(addUser(''));
+    props.dispatch(resetAnswer())
   }
 
     const defaultOptions = {
@@ -36,4 +44,8 @@ function  Result (props) {
     );
   }
 
-export default connect()(Result);
+  const mapStateToProps = (state)=> {
+    return state
+  }
+
+export default connect(mapStateToProps)(Result);
